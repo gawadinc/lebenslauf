@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lebenslauf von Max Mustermann</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -37,12 +38,6 @@
         ul li {
             margin-bottom: 10px;
         }
-        .contact, .skills, .languages {
-            margin-bottom: 20px;
-        }
-        .contact p, .languages p {
-            margin: 5px 0;
-        }
         .skills li {
             background: #f0f0f5;
             padding: 5px 10px;
@@ -57,10 +52,25 @@
             font-size: 0.9em;
             color: #777;
         }
+        .btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #0056b3;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #003f8c;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="resume">
         <h1>Max Mustermann</h1>
         <div class="contact">
             <p><strong>Adresse:</strong> Musterstraße 123, 12345 Musterstadt</p>
@@ -105,5 +115,24 @@
             <p>&copy; 2024 Max Mustermann. Alle Rechte vorbehalten.</p>
         </footer>
     </div>
+
+    <a class="btn" onclick="generatePDF()">PDF herunterladen</a>
+
+    <script>
+        async function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+
+            // Конвертация HTML в PDF
+            const element = document.getElementById('resume');
+            await pdf.html(element, {
+                callback: function (pdf) {
+                    pdf.save('Lebenslauf.pdf');
+                },
+                x: 10,
+                y: 10
+            });
+        }
+    </script>
 </body>
 </html>
