@@ -124,17 +124,27 @@
     <script>
         async function generatePDF() {
             const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF();
 
-            // Конвертация HTML в PDF
             const element = document.getElementById('resume');
-            await pdf.html(element, {
-                callback: function (pdf) {
-                    pdf.save('Lebenslauf.pdf');
-                },
+            const options = {
+                scale: 1, // Уменьшаем масштаб для предотвращения увеличения текста
                 x: 10,
                 y: 10
-            });
+            };
+
+            // Захват контента с помощью html2canvas
+            const canvas = await html2canvas(element, options);
+            const imgData = canvas.toDataURL('image/png');
+
+            // Генерация PDF
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+            // Настроим пропорциональные размеры для изображения
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('Lebenslauf.pdf');
         }
     </script>
 </body>
