@@ -127,9 +127,9 @@
 
             const element = document.getElementById('resume');
             const options = {
-                scale: 1, // Уменьшаем масштаб для предотвращения увеличения текста
-                x: 10,
-                y: 10
+                scale: 2, // Используем масштаб 2 для повышения качества
+                x: 0,
+                y: 0
             };
 
             // Захват контента с помощью html2canvas
@@ -139,11 +139,25 @@
             // Генерация PDF
             const pdf = new jsPDF('p', 'mm', 'a4');
             const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-            // Настроим пропорциональные размеры для изображения
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            // Определение размеров страницы A4 в мм
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            // Расчет пропорций для корректного подгона
+            const ratio = imgProps.width / imgProps.height;
+            const imgWidth = pdfWidth;
+            const imgHeight = pdfWidth / ratio;
+
+            // Убедимся, что высота изображения не превышает высоту страницы A4
+            if (imgHeight > pdfHeight) {
+                const scaleFactor = pdfHeight / imgHeight;
+                imgHeight = pdfHeight;
+                imgWidth = imgWidth * scaleFactor;
+            }
+
+            // Добавляем изображение в PDF
+            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
             pdf.save('Lebenslauf.pdf');
         }
     </script>
