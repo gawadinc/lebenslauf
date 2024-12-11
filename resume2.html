@@ -56,13 +56,13 @@
 			<strong>Elektronikingenieur:</strong> Planung, Entwicklung und Optimierung von elektronischen Schaltungen und Systemen.
 			<ul><li>Durchführung von elektrischen Instandhaltungsarbeiten an Produktionsanlagen</li>
 				<li>Suche und Behebung von Anlagenstörungen</li>
-			</ul><li>Unterstützung bei Wartungen und Inspektionen</li>
-			</li>
-				<li>
-			<strong>Entwickler von Automatisierungslösungen:</strong> Programmierung und Integration von Steuerungssystemen für automatisierte Prozesse.
+				<li>Unterstützung bei Wartungen und Inspektionen</li></ul>
 			</li>
 			<li>
-			Spezialist für eingebettete Systeme (Embedded Systems): Design, Entwicklung und Programmierung von eingebetteten Systemen für spezifische Anwendungen.
+				<strong>Entwickler von Automatisierungslösungen:</strong> Programmierung und Integration von Steuerungssystemen für automatisierte Prozesse.
+			</li>
+			<li>
+				Spezialist für eingebettete Systeme (Embedded Systems): Design, Entwicklung und Programmierung von eingebetteten Systemen für spezifische Anwendungen.
 			</li>
 		</ul>
 	  </div>
@@ -127,7 +127,7 @@
 
             const element = document.getElementById('resume');
             const options = {
-                scale: 3, // Используем масштаб 2 для повышения качества
+                scale: 2, // Используем масштаб 2 для повышения качества
                 x: 0,
                 y: 0
             };
@@ -145,9 +145,9 @@
             const pdfHeight = pdf.internal.pageSize.getHeight();
 
             // Расчет пропорций для корректного подгона
-            const ratio = imgProps.width / imgProps.height;
-            const imgWidth = pdfWidth;
-            const imgHeight = pdfWidth / ratio;
+            let ratio = imgProps.width / imgProps.height;
+            let imgWidth = pdfWidth;
+            let imgHeight = pdfWidth / ratio;
 
             // Убедимся, что высота изображения не превышает высоту страницы A4
             if (imgHeight > pdfHeight) {
