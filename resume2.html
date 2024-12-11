@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lebenslauf</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Подключение jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <!-- Подключение html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+        
+        .btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #0056b3;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #003f8c;
+        }
+    </style>
+</head>
+<body>
+  <div class="resume" id="resume">
+    <div class="header">
+      <div class="photo">
+        <img src="1516883411433.jpeg"  alt="Foto" />
+      </div>
+      <div class="info">
+        <h1>Vadym Havryliuk</h1>
+        <p>Geburtsdatum: 03.09.1979</p>
+        <p>Geburtsort: Kiev, Ukraine</p>
+        <p>Adresse: Feldgasse 28-8, 8750 Judenburg</p>
+        <p>Telefon: +43 (0) 677 643-76634</p>
+        <p>E-Mail: <a href="mailto:vadimgv0@gmail.com">vadimgv0@gmail.com</a></p>
+        <p>Familienstand: Verheiratet, 15 Jahre, zwei Kinder</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Berufserfahrung</h2>
+      <div class="job">
+        <p><strong>01.08.2008 – 01.02.2023</strong></p>
+        <p><strong>Selbstständige Tätigkeit</strong> – Elektronikingenieur</p>
+  <ul>
+    <li>
+      <strong>Elektronikingenieur:</strong> Planung, Entwicklung und Optimierung von elektronischen Schaltungen und Systemen.
+		<li>Durchführung von elektrischen Instandhaltungsarbeiten an Produktionsanlagen</li>
+		<li>Suche und Behebung von Anlagenstörungen</li>
+		<li>Unterstützung bei Wartungen und Inspektionen</li>
+    </li>
+    <li>
+      <strong>Entwickler von Automatisierungslösungen:</strong> Programmierung und Integration von Steuerungssystemen für automatisierte Prozesse.
+    </li>
+    
+	<li>
+		Spezialist für eingebettete Systeme (Embedded Systems): Design, Entwicklung und Programmierung von eingebetteten Systemen für spezifische Anwendungen.
+    </li>
+  </ul>
+
+      <div class="job">
+    <p><strong>12.2004 – 11.2008</strong></p>
+    <p><strong>NADRA BANK (Kiewer Regionalverwaltung)</strong> – Leitender IT-Spezialist</p>
+    <ul>
+        <li>Technischer Support für das Geldautomatennetzwerk, Fehlererkennung, Installation und Inbetriebnahme.</li>
+        <li>Konfiguration von Telekommunikationsverbindungen und Durchführung von Verbindungstests.</li>
+        <li>Überwachung und Analyse der Funktionsweise von Geldautomaten.</li>
+        <li>Technologiestack: Windows 2003/2008, VBS, PowerShell, CMD, Wincor Nixdorf ATM, Client-Bank-Systeme.</li>
+        <li>Installation und Betrieb von Informations- und Zahlungsterminals.</li>
+        <li>Betreuung von Software in Borland Delphi und Arbeit mit Datenbanken; Beginn der Programmierung in Java.</li>
+    </ul>
+</div>
+<div class="job">
+    <p><strong>09.2003 – 12.2004</strong></p>
+    <p><strong>OOO „Direx“</strong> – Elektronikingenieur</p>
+    <ul>
+        <li>Entwicklung von Automatisierungssystemen auf Basis von „Microl“-Modulen und Programmierung des MIC-51 Controllers.</li>
+        <li>Integration von Modulen in ein einheitliches Informationssystem mit PC-Kompatibilität.</li>
+        <li>Erstellung von Testprogrammen in Borland Delphi.</li>
+        <li>Teilnahme an der Installation von zwei Produktionsanlagen für Trockenbaustoffe.</li>
+        <li>Entwicklung von Steuerungsschemata für Verpackungsmaschinen und Dosiersysteme.</li>
+        <li>Konfiguration von Zelio-Programmierbaren-Logiksteuerungen.</li>
+        <li>Entwicklung moderner Windows-basierter Anwendungen mit Borland Delphi und C++ Builder.</li>
+    </ul>
+</div>
+
+
+    <div class="section">
+      <h2>Bildung</h2>
+      <ul>
+        
+        <li>Kiev University of Technology and Design – Magister Ingenieur,  Elektronische Systeme, 2003.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Fähigkeiten</h2>
+      <ul>
+        
+        <li>Führerschein (Klasse B)</li>
+        <li>Computerreparatur</li>
+        
+        <li>Netzwerkadministration</li>
+        <li>Installation von Überwachungskameras</li>
+        <li>Website-Administration</li>
+        <li>Deutsch (A2), Englisch (gut), Ukrainisch,Russisch (Muttersprache)</li>
+      </ul>
+    </div>
+  </div>
+  <a class="btn" onclick="generatePDF()">PDF herunterladen</a>
+
+    <script>
+        async function generatePDF() {
+            const { jsPDF } = window.jspdf;
+
+            const element = document.getElementById('resume');
+            const options = {
+                scale: 2, // Используем масштаб 2 для повышения качества
+                x: 0,
+                y: 0
+            };
+
+            // Захват контента с помощью html2canvas
+            const canvas = await html2canvas(element, options);
+            const imgData = canvas.toDataURL('image/png');
+
+            // Генерация PDF
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgProps = pdf.getImageProperties(imgData);
+
+            // Определение размеров страницы A4 в мм
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            // Расчет пропорций для корректного подгона
+            const ratio = imgProps.width / imgProps.height;
+            const imgWidth = pdfWidth;
+            const imgHeight = pdfWidth / ratio;
+
+            // Убедимся, что высота изображения не превышает высоту страницы A4
+            if (imgHeight > pdfHeight) {
+                const scaleFactor = pdfHeight / imgHeight;
+                imgHeight = pdfHeight;
+                imgWidth = imgWidth * scaleFactor;
+            }
+
+            // Добавляем изображение в PDF
+            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+            pdf.save('Lebenslauf.pdf');
+        }
+    </script>
+</body>
+</html>
