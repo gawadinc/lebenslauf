@@ -118,8 +118,10 @@
     </div>
 
 </div>
+
+	<a class="btn" onclick="generatePDF()">PDF herunterladen</a>
   
-  <a class="btn" onclick="generatePDF()">PDF herunterladen</a>
+  <a class="btn" onclick="generatePDF2()">PDF herunterladen Multi</a>
 
     <script>
         async function generatePDF() {
@@ -160,6 +162,44 @@
             pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
             pdf.save('Lebenslauf.pdf');
         }
+		
+		async function generatePDF2() {
+    const { jsPDF } = window.jspdf;
+
+    const element = document.getElementById('resume');
+    const options = {
+        scale: 3,
+    };
+
+    // Захват контента с помощью html2canvas
+    const canvas = await html2canvas(element, options);
+    const imgData = canvas.toDataURL('image/png');
+
+    // Генерация PDF
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const imgWidth = pdfWidth;
+    const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    // Добавление первой страницы
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    // Добавление следующих страниц
+    while (heightLeft > 0) {
+        position -= pageHeight; // Смещение для следующей страницы
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+    }
+
+    pdf.save('Lebenslauf.pdf');
+}
     </script>
 </body>
 </html>
