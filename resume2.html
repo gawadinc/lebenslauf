@@ -119,12 +119,12 @@
 
 </div>
 
-	<a class="btn" onclick="generatePDF()">PDF herunterladen</a>
+	<a class="btn" onclick="generatePDF2()">PDF herunterladen</a>
   
-  <a class="btn" onclick="generatePDF2()">PDF herunterladen Multi</a>
+  <a class="btn" onclick="generatePDF()">PDF herunterladen Multi</a>
 
     <script>
-        async function generatePDF() {
+        async function generatePDF2() {
             const { jsPDF } = window.jspdf;
 
             const element = document.getElementById('resume');
@@ -163,59 +163,42 @@
             pdf.save('Lebenslauf.pdf');
         }
 		
-		async function generatePDF2() {
+		async function generatePDF() {
     const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'mm', 'a4');
 
     const element = document.getElementById('resume');
-    const options = {
-        scale: 3,
-    };
+    const pageHeight = pdf.internal.pageSize.height;
+    const pageWidth = pdf.internal.pageSize.width;
+    const options = { scale: 2 };
 
-    // Захват контента с помощью html2canvas
+    // Захват контента
     const canvas = await html2canvas(element, options);
     const imgData = canvas.toDataURL('image/png');
 
-    // Настройка PDF
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const headerHeight = 20; // Высота верхнего колонтитула
-    const footerHeight = 15; // Высота нижнего колонтитула
-    const usablePageHeight = pageHeight - headerHeight - footerHeight;
+    let imgHeight = canvas.height * 210 / canvas.width; // Высота изображения пропорционально ширине страницы
+    let position = 0; // Начальная позиция для изображения
 
-    const imgProps = pdf.getImageProperties(imgData);
-    const imgWidth = pageWidth;
-    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
-
-    let heightLeft = imgHeight;
-    let position = headerHeight;
-
-    let pageNumber = 1;
-
-    // Функция для добавления колонтитулов
-    function addHeadersAndFooters(pageNum) {
+    while (imgHeight > 0) {
+        // Добавить верхний колонтитул
         pdf.setFontSize(10);
-        pdf.text('Lebenslauf - Vadym Havryliuk', 10, 10); // Верхний колонтитул
-        pdf.text(`Seite ${pageNum}`, pageWidth - 30, pageHeight - 10); // Номер страницы в нижнем колонтитуле
-    }
+        pdf.text('Lebenslauf - Vadym Havryliuk', 10, 10);
 
-    // Первая страница
-    addHeadersAndFooters(pageNumber);
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-    heightLeft -= usablePageHeight;
+        // Добавить контент
+        pdf.addImage(imgData, 'PNG', 0, position + 20, pageWidth, pageHeight - 40);
 
-    // Следующие страницы
-    while (heightLeft > 0) {
-        pdf.addPage();
-        pageNumber++;
-        position = headerHeight - heightLeft; // Корректируем позицию
-        addHeadersAndFooters(pageNumber);
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= usablePageHeight;
+        // Добавить нижний колонтитул
+        pdf.text(`Seite ${pdf.internal.getNumberOfPages()}`, pageWidth - 20, pageHeight - 10);
+
+        imgHeight -= pageHeight - 40; // Вычитать высоту страницы с учётом колонтитулов
+        position -= pageHeight; // Сдвинуть на следующую страницу
+
+        if (imgHeight > 0) pdf.addPage(); // Если остался контент, добавить новую страницу
     }
 
     pdf.save('Lebenslauf.pdf');
 }
+
 
     </script>
 </body>
