@@ -163,7 +163,7 @@
             pdf.save('Lebenslauf.pdf');
         }
 		
-		async function generatePDF2() {
+		async function generatePDF() {
     const { jsPDF } = window.jspdf;
 
     const element = document.getElementById('resume');
@@ -175,31 +175,48 @@
     const canvas = await html2canvas(element, options);
     const imgData = canvas.toDataURL('image/png');
 
-    // Генерация PDF
+    // Настройка PDF
     const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
+    const headerHeight = 20; // Высота верхнего колонтитула
+    const footerHeight = 15; // Высота нижнего колонтитула
+    const usablePageHeight = pageHeight - headerHeight - footerHeight;
+
     const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const imgWidth = pdfWidth;
-    const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    const imgWidth = pageWidth;
+    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
 
     let heightLeft = imgHeight;
-    let position = 0;
+    let position = headerHeight;
 
-    // Добавление первой страницы
+    let pageNumber = 1;
+
+    // Функция для добавления колонтитулов
+    function addHeadersAndFooters(pageNum) {
+        pdf.setFontSize(10);
+        pdf.text('Lebenslauf - Vadym Havryliuk', 10, 10); // Верхний колонтитул
+        pdf.text(`Seite ${pageNum}`, pageWidth - 30, pageHeight - 10); // Номер страницы в нижнем колонтитуле
+    }
+
+    // Первая страница
+    addHeadersAndFooters(pageNumber);
     pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
+    heightLeft -= usablePageHeight;
 
-    // Добавление следующих страниц
+    // Следующие страницы
     while (heightLeft > 0) {
-        position -= pageHeight; // Смещение для следующей страницы
         pdf.addPage();
+        pageNumber++;
+        position = headerHeight - heightLeft; // Корректируем позицию
+        addHeadersAndFooters(pageNumber);
         pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        heightLeft -= usablePageHeight;
     }
 
     pdf.save('Lebenslauf.pdf');
 }
+
     </script>
 </body>
 </html>
